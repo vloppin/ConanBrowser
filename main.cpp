@@ -9,7 +9,7 @@ int main(int argc, char *argv[])
 
 	QGuiApplication app(argc, argv);
 
-	qmlRegisterType<ConanHelper>("ConanHelper", 1, 0, "ConanHelper");
+	qmlRegisterType<ConanHelper>("ConanHelperBinding", 1, 0, "ConanHelperBinding");
 
 	QQmlApplicationEngine engine;
 	const QUrl url(QStringLiteral("qrc:/main.qml"));
