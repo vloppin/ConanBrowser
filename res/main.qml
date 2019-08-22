@@ -9,7 +9,7 @@ ApplicationWindow {
     width: 640
     height: 480
     title: qsTr("Hello World")
-    color: "#FF0000"
+    color: "#00FF00"
 
     header: ToolBar {
         contentHeight: toolButton.implicitHeight
