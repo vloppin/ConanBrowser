@@ -193,22 +193,35 @@ ApplicationWindow {
         id: conanHelper
     }
 
+    PackageListView {
+        id: packageListView
+        onPackageSelected: {
+            console.debug( "Package : " + packageListView.model.get(pValue).name + " selected" );
+
+        }
+    }
+
     RemoteView {
-        id: removeView
+        id: remoteView
         onRemoteSelected: {
-            console.log("tata " + removeView.model.get(pValue).name );
+            var lServer = remoteView.model.get(pValue)
+            console.debug("Remote : " + lServer.name + " selected" );
+
+            stackView.push(packageListView)
+
+            conanHelper.populatePackageFromServer( lServer.url, packageListView.model )
         }
     }
 
     StackView {
         id: stackView
-        initialItem: removeView
+        initialItem: remoteView
         anchors.fill: parent
     }
 
     Component.onCompleted:
     {
-        conanHelper.populate( removeView.model )
+        conanHelper.populateRemotes( remoteView.model )
     }
 
 }

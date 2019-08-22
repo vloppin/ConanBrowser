@@ -8,7 +8,6 @@ Page {
 
     title: qsTr("Remote List")
 
-
     ListView {
         id: remoteList
         anchors.fill: parent
@@ -42,22 +41,6 @@ Page {
             onClicked: remoteSelected( index )
         }
         model: ListModel {
-/*
-            ListElement {
-                name: "Test1"
-                url: "test1url"
-            }
-
-            ListElement {
-                name: "Test2"
-                url: "test2url"
-            }
-
-            ListElement {
-                name: "Local"
-                url: ""
-            }
-*/
         }
     }
 }

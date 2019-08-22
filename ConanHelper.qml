@@ -7,7 +7,7 @@ Item {
         id: binding
     }
 
-    function populate(pModel)
+    function populateRemotes(pModel)
     {
         console.debug("> Remote Listing : Start")
         pModel.clear()
@@ -26,6 +26,27 @@ Item {
 
                 console.debug("> Remote Listing : Done")
             });
+    }
+
+    function populatePackageFromServer(pServerName,pModel)
+    {
+        console.debug("> Package Listing for " + pServerName + ": Start")
+        pModel.clear()
+
+        binding.getPackageList(pServerName,
+            function(pPackageList){
+                console.debug("> Package Listing : parsing")
+
+                var packageList = JSON.parse(pPackageList);
+                var pckList = packageList.results[0].items
+                for( var pck in pckList )
+                {
+                    var pckName = pckList[pck].recipe.id
+                    pModel.append({ "name": pckName })
+                }
+                console.debug("> Package Listing : Done")
+            });
+
     }
 }
 
