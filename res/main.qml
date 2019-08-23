@@ -1,7 +1,6 @@
 import QtQuick 2.12
 import QtQuick.Window 2.12
 import QtQuick.Controls 2.5
-import ConanHelper 1.0
 
 ApplicationWindow {
     id: window
@@ -29,7 +28,7 @@ ApplicationWindow {
 
         Label {
             id: remoteList
-//            text: stackView.currentItem.title
+            text: stackView.currentItem.title
             anchors.centerIn: parent
         }
     }
@@ -60,7 +59,7 @@ ApplicationWindow {
 //            }
 //        }
 //    }
-
+/*
     PackageModel {
         id: packageModel
     }
@@ -107,34 +106,6 @@ ApplicationWindow {
                     mainListView.visible = false;
                     packageListView.visible = true;
                     packageModel.populate( "" );
-
-                    /*
-                    console.debug("> Package Listing : Start")
-                    var lName  = name;
-                    var lUrl = url;
-
-                    //mainListView.delegate = packageDelegate
-                    //mainListView.model = packageModel
-
-                    ch.getPackageList(lUrl, function(pPackageList)
-                    {
-                        var packageList = JSON.parse(pPackageList);
-                        var toto = packageList.results[0].items
-                        for( var aaa in toto )
-                        {
-                            var pckName = toto[aaa].recipe.id
-                            console.log(pckName)
-                            packageModel.append({ "name": pckName })
-                            console.log("CHOUCROUTE")
-                        }
-
-                        console.debug("> Package Listing : Done")
-                    });
-
-
-                    remoteList.text = lName
-                    remoteModel.model.clear();
-                    */
                 }
             }
         }
@@ -215,4 +186,42 @@ ApplicationWindow {
         model: packageModel.model
         visible: false
     }
+*/
+
+
+    ConanHelper {
+        id: conanHelper
+    }
+
+    PackageListView {
+        id: packageListView
+        onPackageSelected: {
+            console.debug( "Package : " + packageListView.model.get(pValue).name + " selected" );
+
+        }
+    }
+
+    RemoteView {
+        id: remoteView
+        onRemoteSelected: {
+            var lServer = remoteView.model.get(pValue)
+            console.debug("Remote : " + lServer.name + " selected" );
+
+            stackView.push(packageListView)
+
+            conanHelper.populatePackageFromServer( lServer.url, packageListView.model )
+        }
+    }
+
+    StackView {
+        id: stackView
+        initialItem: remoteView
+        anchors.fill: parent
+    }
+
+    Component.onCompleted:
+    {
+        conanHelper.populateRemotes( remoteView.model )
+    }
+
 }
