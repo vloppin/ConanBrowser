@@ -3,7 +3,7 @@
         <file>main.qml</file>
         <file>RemoteView.qml</file>
         <file>PackageListView.qml</file>
-        <file>Page2Form.ui.qml</file>
+        <file>PackageInfo.qml</file>
         <file>qtquickcontrols2.conf</file>
         <file>ConanHelper.qml</file>
     </qresource>

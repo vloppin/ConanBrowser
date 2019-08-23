@@ -6,6 +6,9 @@ Item {
     ConanHelperBinding{
         id: binding
     }
+    property string serverName: ""
+    property string serveUrl: ""
+    property string packageName: ""
 
     function populateRemotes(pModel)
     {
@@ -48,9 +51,26 @@ Item {
             });
 
     }
-}
+    function populatePackageInfo(pPackageName, pServerName, pGrid)
+    {
+        console.debug("> Package Info " + pPackageName + " on " + pServerName);
 
-/*##^## Designer {
-    D{i:0;autoSize:true;height:480;width:640}
+        binding.getPackageInfo(pPackageName, pServerName,
+            function(pPackageInfo){
+                console.debug("> Package Info : parsing")
+
+                var packageInfo = JSON.parse(pPackageInfo);
+                var pckInfo = packageInfo.results[0].items[0].packages;
+                for( var pck in pckInfo )
+                {
+                    var outDated = pckInfo[pck].outdated;
+                    var id = pckInfo[pck].id;
+                    var compiler = pckInfo[pck].settings.compiler;
+                    console.log(" >> " + compiler + " // " + id + " -- " + outDated );
+                }
+
+                console.debug("> Package Info : Done");
+            });
+    }
+
 }
- ##^##*/

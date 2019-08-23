@@ -32,89 +32,7 @@ ApplicationWindow {
             anchors.centerIn: parent
         }
     }
-
-//    Drawer {
-//        id: drawer
-//        width: window.width * 0.66
-//        height: window.height
-
-//        Column {
-//            anchors.fill: parent
-
-//            ItemDelegate {
-//                text: qsTr("Page 1")
-//                width: parent.width
-//                onClicked: {
-//                    stackView.push("Page1Form.ui.qml")
-//                    drawer.close()
-//                }
-//            }
-//            ItemDelegate {
-//                text: qsTr("Page 2")
-//                width: parent.width
-//                onClicked: {
-//                    stackView.push("Page2Form.ui.qml")
-//                    drawer.close()
-//                }
-//            }
-//        }
-//    }
-/*
-    PackageModel {
-        id: packageModel
-    }
-    Component {
-        id: packageDelegate
-        Item {
-            width: 340; height: 40
-            ItemDelegate {
-                anchors.fill: parent
-                Rectangle{
-                    anchors.fill: parent
-                    color: "#C0C0C0"
-                    border.color: "black"
-                    border.width: 1
-                    Column {
-                        Text { text: '<b>Name:</b> ' + name }
-                    }
-                }
-            }
-        }
-    }
-
-    ConanHelper{
-        id: ch
-    }
-
-    Component {
-        id: remoteDelegate
-        Item {
-            width: 340; height: 40
-            ItemDelegate {
-                anchors.fill: parent
-                Rectangle{
-                    anchors.fill: parent
-                    color: "#C0C0C0"
-                    border.color: "black"
-                    border.width: 1
-                    Column {
-                        Text { text: '<b>Name:</b> ' + name }
-                        Text { text: '<b>URL:</b> ' + url }
-                    }
-                }
-                onDoubleClicked: {
-                    mainListView.visible = false;
-                    packageListView.visible = true;
-                    packageModel.populate( "" );
-                }
-            }
-        }
-    }
-
-    RemoteModel{
-        id: remoteModel
-    }
-
+    /*
     BusyIndicator {
         id: control
 
@@ -171,45 +89,42 @@ ApplicationWindow {
             }
         }
     }
-
-    ListView {
-        id: mainListView
-        anchors.fill: parent
-        delegate: remoteDelegate
-        model: remoteModel.model
-    }
-
-    ListView {
-        id: packageListView
-        anchors.fill: parent
-        delegate: packageDelegate
-        model: packageModel.model
-        visible: false
-    }
 */
-
 
     ConanHelper {
         id: conanHelper
     }
 
+    PackageInfo {
+        id: packageInfo
+    }
+
     PackageListView {
         id: packageListView
         onPackageSelected: {
-            console.debug( "Package : " + packageListView.model.get(pValue).name + " selected" );
+            var lPkgName = packageListView.model.get(pValue).name;
+            console.debug( "Package : " + lPkgName + " selected" );
 
+            conanHelper.packageName = lPkgName
+
+            stackView.push(packageInfo);
+
+            conanHelper.populatePackageInfo( lPkgName, conanHelper.serveUrl, packageInfo.grid );
         }
     }
 
     RemoteView {
         id: remoteView
         onRemoteSelected: {
-            var lServer = remoteView.model.get(pValue)
+            var lServer = remoteView.model.get(pValue);
             console.debug("Remote : " + lServer.name + " selected" );
 
-            stackView.push(packageListView)
+            conanHelper.serverName = lServer.name;
+            conanHelper.serveUrl = lServer.url;
 
-            conanHelper.populatePackageFromServer( lServer.url, packageListView.model )
+            stackView.push(packageListView);
+
+            conanHelper.populatePackageFromServer( lServer.url, packageListView.model );
         }
     }
 
