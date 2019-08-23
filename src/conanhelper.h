@@ -13,6 +13,8 @@ public:
 	Q_INVOKABLE void getRemoteList(const QJSValue & pCallback);
 
 	Q_INVOKABLE void getPackageList(const QString & pServer, const QJSValue & pCallback);
+
+	Q_INVOKABLE void getPackageInfo(const QString & pPackageName, const QString & pServer, const QJSValue & pCallback);
 };
 
 #endif // CONANHELPER_H

@@ -53,37 +53,15 @@ QByteArray getRemoteList()
 	return lDoc.toJson();
 }
 
-}
-
-void ConanHelper::getRemoteList( const QJSValue & pCallback )
+QByteArray getJsonResult(QStringList & pArgs)
 {
-	auto *watcher = new QFutureWatcher<QByteArray>();
-	QObject::connect(watcher, &QFutureWatcher<QByteArray>::finished,
-						this, [this,watcher,pCallback]() {
-		   QByteArray files = watcher->result();
-		   QJSValue cbCopy(pCallback); // needed as callback is captured as const
-		   QJSEngine *engine = qjsEngine(this);
-		   cbCopy.call(QJSValueList { engine->toScriptValue(files) });
-		   watcher->deleteLater();
-	   });
-	watcher->setFuture(QtConcurrent::run(&::getRemoteList));
-}
-
-namespace
-{
-
-QByteArray getPackageList(const QString & pServer)
-{
-	QStringList args = { "search", "*" };
-	if( ! pServer.isEmpty() ) args << QString("-r=%1").arg( pServer );
-
 	QString lTmPath = QDir::tempPath();
 	lTmPath += "/conan_package_result.json";
 
-	args << QString("-j=%1").arg(lTmPath);
+	pArgs << QString("-j=%1").arg(lTmPath);
 
 	QProcess lProcess;
-	lProcess.start("conan", args);
+	lProcess.start("conan", pArgs);
 	lProcess.waitForFinished();
 
 	QFile lFile;
@@ -94,22 +72,58 @@ QByteArray getPackageList(const QString & pServer)
 
 	QFile::remove(lTmPath);
 
+//	QByteArray lConsole = lProcess.readAll();
+//	std::cout << lConsole.data() << std::endl;
+
 	return lRes;
 }
 
+QByteArray getPackageList(const QString & pServer)
+{
+	QStringList args = { "search", "*" };
+	if( ! pServer.isEmpty() ) args << QString("-r=%1").arg( pServer );
 
+	return getJsonResult( args );
+}
+
+QByteArray getPackageInfo(const QString & pPackageName, const QString & pServer)
+{
+	QStringList args = { "search", pPackageName };
+	if( ! pServer.isEmpty() ) args << QString("-r=%1").arg( pServer );
+
+	return getJsonResult( args );
+}
+
+QFutureWatcher<QByteArray> * getByteArrayWatcher(ConanHelper * pObj, const QJSValue & pCallback)
+{
+	auto *watcher = new QFutureWatcher<QByteArray>();
+	QObject::connect(watcher, &QFutureWatcher<QByteArray>::finished,
+						pObj, [pObj,watcher,pCallback]() {
+		   QByteArray files = watcher->result();
+		   QJSValue cbCopy(pCallback); // needed as callback is captured as const
+		   QJSEngine *engine = qjsEngine(pObj);
+		   cbCopy.call(QJSValueList { engine->toScriptValue(files) });
+		   watcher->deleteLater();
+	   });
+	return watcher;
+}
+
+}
+
+void ConanHelper::getRemoteList( const QJSValue & pCallback )
+{
+	auto * watcher = ::getByteArrayWatcher(this, pCallback);
+	watcher->setFuture(QtConcurrent::run(&::getRemoteList));
 }
 
 void ConanHelper::getPackageList(const QString &pServer, const QJSValue &pCallback)
 {
-	auto *watcher = new QFutureWatcher<QByteArray>();
-	QObject::connect(watcher, &QFutureWatcher<QByteArray>::finished,
-						this, [this,watcher,pCallback]() {
-		   QByteArray files = watcher->result();
-		   QJSValue cbCopy(pCallback); // needed as callback is captured as const
-		   QJSEngine *engine = qjsEngine(this);
-		   cbCopy.call(QJSValueList { engine->toScriptValue(files) });
-		   watcher->deleteLater();
-	   });
+	auto * watcher = ::getByteArrayWatcher(this, pCallback);
 	watcher->setFuture(QtConcurrent::run(&::getPackageList, pServer));
+}
+
+void ConanHelper::getPackageInfo(const QString &pPackageName, const QString &pServer, const QJSValue &pCallback)
+{
+	auto * watcher = ::getByteArrayWatcher(this, pCallback);
+	watcher->setFuture(QtConcurrent::run(&::getPackageInfo, pPackageName, pServer));
 }
