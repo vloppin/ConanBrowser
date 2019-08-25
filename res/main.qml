@@ -109,7 +109,7 @@ ApplicationWindow {
 
             stackView.push(packageInfo);
 
-            conanHelper.populatePackageInfo( lPkgName, conanHelper.serveUrl, packageInfo.grid );
+            conanHelper.populatePackageInfo( lPkgName, conanHelper.serveUrl, packageInfo );
         }
     }
 

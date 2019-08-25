@@ -58,16 +58,101 @@ Item {
         binding.getPackageInfo(pPackageName, pServerName,
             function(pPackageInfo){
                 console.debug("> Package Info : parsing")
+/*
+function onlyUnique(value, index, self) {
+    return self.indexOf(value) === index;
+}
+
+// usage example:
+var a = ['a', 1, 'a', 2, '1'];
+var unique = a.filter( onlyUnique ); // returns ['a', 1, 2, '1']
+*/
+
+
+                var lCompilerMap = {}
+                var lOptionsMap = {}
 
                 var packageInfo = JSON.parse(pPackageInfo);
                 var pckInfo = packageInfo.results[0].items[0].packages;
                 for( var pck in pckInfo )
                 {
                     var outDated = pckInfo[pck].outdated;
-                    var id = pckInfo[pck].id;
                     var compiler = pckInfo[pck].settings.compiler;
-                    console.log(" >> " + compiler + " // " + id + " -- " + outDated );
+                    var os = pckInfo[pck].settings.os;
+                    var compilerVersion = pckInfo[pck].settings["compiler.version"];
+                    var compilerString = os + " " + compiler + " " + compilerVersion;
+                    if( compiler === "Visual Studio" ){
+                        compilerString += " (" + pckInfo[pck].settings["compiler.runtime"].substr(0,2) + ")";
+                    }
+
+                    var settings = pckInfo[pck].settings;
+                    delete settings["os"]
+                    delete settings["compiler.version"]
+                    delete settings["compiler.runtime"]
+                    delete settings["compiler"]
+
+                    var extra = {
+                        arch: pckInfo[pck].settings.arch,
+                        build_type: pckInfo[pck].settings.build_type,
+                        options: pckInfo[pck].options,
+                        requires: pckInfo[pck].requires,
+                        settings: settings
+                    }
+
+                    var optionString = JSON.stringify(extra.settings) + " " + JSON.stringify(extra.options);
+
+                    var mapEntry = lCompilerMap[compilerString];
+                    if( mapEntry === undefined){
+                        mapEntry = [];
+                    }
+                    mapEntry.push({ outdated: outDated, extra: extra });
+                    lCompilerMap[compilerString] = mapEntry;
+
+                    mapEntry = lOptionsMap[optionString];
+                    if( mapEntry === undefined){
+                        mapEntry = []
+                    }
+                    mapEntry.push({ outdated: outDated, extra: extra });
+                    lOptionsMap[optionString] = mapEntry;
+
+                    console.log(" >> " + compilerString + " -- " + outDated );
+                    console.log(">> " + optionString)
                 }
+
+                var lCompilerList = [];
+                pGrid.model.append({ name: "", outdated: false, extra: {} });
+                for(var lCompiler in lCompilerMap){
+                    console.log(lCompiler)
+                    pGrid.model.append({ name: lCompiler, outdated: false, extra: {} })
+                    lCompilerList.push( lCompiler )
+                }
+
+                for(var lOptions in lOptionsMap){
+                    console.log(lOptions)
+                    pGrid.model.append({ name: lOptions, outdated: false, extra: {} });
+                    for(var lCompilerIdx in lCompilerList)
+                    {
+                        var lCompilerName = lCompilerList[lCompilerIdx];
+                        console.log(lCompilerName)
+                        var lCompilerEntries = lCompilerMap[lCompilerName];
+                        var lFound = false;
+                        for(var lCmpIdx in lCompilerEntries){
+                            var lCmpData = lCompilerEntries[lCmpIdx]
+                            var lCmpOptionString = JSON.stringify(lCmpData.settings) + " " + JSON.stringify(lCmpData.options);
+                            if( lCmpOptionString === lOptions)
+                            {
+                                pGrid.model.append({ name: "", outdated: lCmpData.outdated, extra: {} })
+                                lFound = true;
+                            }
+                        }
+                        if( !lFound ){
+                            pGrid.model.append({ name: "", outdated: false, extra: {} });
+                        }
+                    }
+                }
+
+                pGrid.grid.columns = 4
+
 
                 console.debug("> Package Info : Done");
             });
