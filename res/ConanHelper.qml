@@ -119,6 +119,38 @@ var unique = a.filter( onlyUnique ); // returns ['a', 1, 2, '1']
                     console.log(">> " + optionString)
                 }
 
+                var lOptionsList = [];
+                pGrid.model.append({ name: "", outdated: 0, extra: {} });
+                for(var lOptions in lOptionsMap){
+                    console.log(lOptions)
+                    pGrid.model.append({ name: lOptions.substr(5,4), outdated: 0, extra: {} });
+                    lOptionsList.push( lOptions )
+                }
+
+                for(var lCompiler in lCompilerMap){
+                    console.log(lCompiler)
+                    pGrid.model.append({ name: lCompiler, outdated: 0, extra: {} })
+
+                    var lOptList = lCompilerMap[lCompiler];
+                    for(var lOptionString in lOptionsMap){
+                        var lFound = false;
+                        for(var lOptIdx in lOptList){
+                            var lCmpData = lOptList[lOptIdx]
+                            var lCmpOptionString = JSON.stringify(lCmpData.extra.settings) + " " + JSON.stringify(lCmpData.extra.options);
+
+                            if( lOptionString === lCmpOptionString ){
+                                pGrid.model.append({ name: "", outdated: (lCmpData.outdated ? 1 : 2), extra: {} })
+                                lFound = true;
+
+                            }
+                        }
+                        if( !lFound ){
+                            pGrid.model.append({ name: "", outdated: 0, extra: {} });
+                        }
+                    }
+                }
+
+/*
                 var lCompilerList = [];
                 pGrid.model.append({ name: "", outdated: false, extra: {} });
                 for(var lCompiler in lCompilerMap){
@@ -150,8 +182,9 @@ var unique = a.filter( onlyUnique ); // returns ['a', 1, 2, '1']
                         }
                     }
                 }
-
-                pGrid.grid.columns = 4
+*/
+                pGrid.grid.columns = lOptionsList.length + 1;
+                console.debug(pGrid.grid.columns)
 
 
                 console.debug("> Package Info : Done");

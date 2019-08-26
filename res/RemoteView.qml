@@ -11,23 +11,31 @@ Page {
     ListView {
         id: remoteList
         anchors.fill: parent
+        spacing: 2
         delegate: ItemDelegate {
             id: remoteItem
             x: 5
-            width: parent.width
-            height: 40
+            y: 5
+            width: parent.width-10
+            height: 50
+            background: Rectangle{
+                border.width: 1
+                border.color: "darkgrey"
+                color: "lightgrey"
+            }
+
             Row {
                 id: row1
-                anchors.margins: 5
-                padding: 10
+                padding: 5
                 spacing: 10
+                height: 40
+
                 Rectangle {
-                    width: 35
-                    height: 35
+                    width: 40
+                    height: 40
                     color: (url == "" ? "blue" : "green")
                 }
                 Column {
-                    //width: parent.width - 80
                     height: 40
                     Text {
                         text: name

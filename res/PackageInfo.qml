@@ -17,27 +17,17 @@ Page {
         Repeater {
             id: gridRepeater
             delegate:
-                Text{
-                    width: 50
-                    height: 50
-                    text: name
-                }
-
-                /*
-                Item{
-                    Column{
-                        Rectangle {
-                            width: 50
-                            height: 50
-                            color: "red"
-                        }
-                        Rectangle {
-                            width: 50
-                            height: 50
-                            color: "blue"
-                        }
+                Rectangle{
+                    implicitWidth: 90
+                    height: 30
+                    color: (outdated === 0 ? "white" : (outdated === 1 ? "darkyellow" : "darkgreen"))
+                    Text{
+                        leftPadding: 5
+                        height: 25
+                        fontSizeMode: Text.Fit
+                        text: name
                     }
-                }*/
+                }
             model: ListModel {}
         }
     }

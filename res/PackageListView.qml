@@ -11,22 +11,23 @@ Page {
     ListView {
         id: packageList
         anchors.fill: parent
+        spacing: 2
         delegate: ItemDelegate {
             id: packageListItem
             x: 5
-            width: parent.width
+            width: parent.width-10
             height: 40
-            Row {
-                id: row1
-                anchors.margins: 5
-                padding: 10
-                spacing: 10
-                height: 30
-
-                Text {
-                    text: name
-                    font.bold: true
-                }
+            background: Rectangle{
+                border.width: 1
+                border.color: "darkgrey"
+                color: "lightgrey"
+            }
+            Text {
+                anchors.fill: parent
+                leftPadding: 20
+                verticalAlignment: Text.AlignVCenter
+                text: name
+                font.bold: true
             }
             onClicked: packageSelected( index )
         }
