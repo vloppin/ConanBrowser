@@ -124,7 +124,7 @@ ApplicationWindow {
 
             stackView.push(packageListView);
 
-            conanHelper.populatePackageFromServer( lServer.url, packageListView.model );
+            conanHelper.populatePackageFromServer( lServer.name, packageListView.model );
         }
     }
 

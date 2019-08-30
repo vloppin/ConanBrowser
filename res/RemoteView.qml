@@ -38,7 +38,7 @@ Page {
                 Column {
                     height: 40
                     Text {
-                        text: name
+                        text: (name !== "" ? name : "Local-Cache")
                         font.bold: true
                     }
                     Text {

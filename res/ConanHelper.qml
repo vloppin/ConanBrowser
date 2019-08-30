@@ -24,7 +24,7 @@ Item {
                 } else {
                     for( var remote in remoteList )
                         pModel.append({ name: remoteList[remote].name, url: remoteList[remote].url })
-                    pModel.append({ name: "Local-Cache", url: "" })
+                    pModel.append({ name: "", url: "" })
                 }
 
                 console.debug("> Remote Listing : Done")
