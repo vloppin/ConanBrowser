@@ -62,7 +62,7 @@ QByteArray getJsonResult(QStringList & pArgs)
 
 	QProcess lProcess;
 	lProcess.start("conan", pArgs);
-	lProcess.waitForFinished();
+	lProcess.waitForFinished(-1);
 
 	QFile lFile;
 	lFile.setFileName(lTmPath);
