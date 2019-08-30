@@ -58,16 +58,6 @@ Item {
         binding.getPackageInfo(pPackageName, pServerName,
             function(pPackageInfo){
                 console.debug("> Package Info : parsing")
-/*
-function onlyUnique(value, index, self) {
-    return self.indexOf(value) === index;
-}
-
-// usage example:
-var a = ['a', 1, 'a', 2, '1'];
-var unique = a.filter( onlyUnique ); // returns ['a', 1, 2, '1']
-*/
-
 
                 var lCompilerMap = {}
                 var lOptionsMap = {}
@@ -114,21 +104,16 @@ var unique = a.filter( onlyUnique ); // returns ['a', 1, 2, '1']
                     }
                     mapEntry.push({ outdated: outDated, extra: extra });
                     lOptionsMap[optionString] = mapEntry;
-
-                    console.log(" >> " + compilerString + " -- " + outDated );
-                    console.log(">> " + optionString)
                 }
 
                 var lOptionsList = [];
                 pGrid.model.append({ name: "", outdated: 0, extra: {} });
                 for(var lOptions in lOptionsMap){
-                    console.log(lOptions)
                     pGrid.model.append({ name: lOptions.substr(5,4), outdated: 0, extra: {} });
                     lOptionsList.push( lOptions )
                 }
 
                 for(var lCompiler in lCompilerMap){
-                    console.log(lCompiler)
                     pGrid.model.append({ name: lCompiler, outdated: 0, extra: {} })
 
                     var lOptList = lCompilerMap[lCompiler];
@@ -150,42 +135,7 @@ var unique = a.filter( onlyUnique ); // returns ['a', 1, 2, '1']
                     }
                 }
 
-/*
-                var lCompilerList = [];
-                pGrid.model.append({ name: "", outdated: false, extra: {} });
-                for(var lCompiler in lCompilerMap){
-                    console.log(lCompiler)
-                    pGrid.model.append({ name: lCompiler, outdated: false, extra: {} })
-                    lCompilerList.push( lCompiler )
-                }
-
-                for(var lOptions in lOptionsMap){
-                    console.log(lOptions)
-                    pGrid.model.append({ name: lOptions, outdated: false, extra: {} });
-                    for(var lCompilerIdx in lCompilerList)
-                    {
-                        var lCompilerName = lCompilerList[lCompilerIdx];
-                        console.log(lCompilerName)
-                        var lCompilerEntries = lCompilerMap[lCompilerName];
-                        var lFound = false;
-                        for(var lCmpIdx in lCompilerEntries){
-                            var lCmpData = lCompilerEntries[lCmpIdx]
-                            var lCmpOptionString = JSON.stringify(lCmpData.settings) + " " + JSON.stringify(lCmpData.options);
-                            if( lCmpOptionString === lOptions)
-                            {
-                                pGrid.model.append({ name: "", outdated: lCmpData.outdated, extra: {} })
-                                lFound = true;
-                            }
-                        }
-                        if( !lFound ){
-                            pGrid.model.append({ name: "", outdated: false, extra: {} });
-                        }
-                    }
-                }
-*/
                 pGrid.grid.columns = lOptionsList.length + 1;
-                console.debug(pGrid.grid.columns)
-
 
                 console.debug("> Package Info : Done");
             });
