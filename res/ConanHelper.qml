@@ -41,13 +41,24 @@ Item {
                 console.debug("> Package Listing : parsing")
 
                 var packageList = JSON.parse(pPackageList);
-                var pckList = packageList.results[0].items
-                for( var pck in pckList )
+                if(!packageList.error)
                 {
-                    var pckName = pckList[pck].recipe.id
-                    pModel.append({ "name": pckName })
+                    if( packageList.results.length > 0)
+                    {
+                        var pckList = packageList.results[0].items
+                        for( var pck in pckList )
+                        {
+                            var pckName = pckList[pck].recipe.id
+                            console.debug(pckName);
+                            pModel.append({ "name": pckName })
+                        }
+                    }
+                    console.debug("> Package Listing : Done")
                 }
-                console.debug("> Package Listing : Done")
+                else
+                {
+                    console.log("> Package Listing : Error")
+                }
             });
 
     }
