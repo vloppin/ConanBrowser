@@ -72,8 +72,10 @@ QByteArray getJsonResult(QStringList & pArgs)
 
 	QFile::remove(lTmPath);
 
-//	QByteArray lConsole = lProcess.readAll();
-//	std::cout << lConsole.data() << std::endl;
+	if( lProcess.exitCode() != 0){
+		QByteArray lConsole = lProcess.readAll();
+		std::cout << lConsole.data() << std::endl;
+	}
 
 	return lRes;
 }
