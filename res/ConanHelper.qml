@@ -113,6 +113,13 @@ Item {
                         compilerString += " (" + pckInfo[pck].settings["compiler.runtime"].substr(0,2) + ")";
                     }
 
+                    pPackageView.listModel.append({
+                        compiler: compilerString,
+                        outdated: outDated,
+                        build_type: pckInfo[pck].settings.build_type,
+                        optionString: JSON.stringify(pckInfo[pck].options)
+                    });
+
                     var settings = pckInfo[pck].settings;
                     delete settings["os"]
                     delete settings["compiler.version"]
