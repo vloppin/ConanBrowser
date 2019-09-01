@@ -9,6 +9,7 @@ Item {
     property string serverName: ""
     property string serveUrl: ""
     property string packageName: ""
+    property variant busyIndicator: ({})
 
     function populateRemotes(pModel)
     {

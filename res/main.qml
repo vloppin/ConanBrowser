@@ -32,9 +32,58 @@ ApplicationWindow {
             anchors.centerIn: parent
         }
     }
-    /*
+
+    ConanHelper {
+        id: conanHelper
+    }
+
+    PackageInfo {
+        id: packageInfo
+    }
+
+    PackageListView {
+        id: packageListView
+        onPackageSelected: {
+            var lPkgName = packageListView.model.get(pValue).name;
+            console.debug( "Package : " + lPkgName + " selected" );
+
+            control.visible = true
+            conanHelper.packageName = lPkgName
+
+            stackView.push(packageInfo);
+
+            conanHelper.populatePackageInfo( lPkgName, conanHelper.serveUrl, packageInfo );
+        }
+    }
+
+    RemoteView {
+        id: remoteView
+        onRemoteSelected: {
+            var lServer = remoteView.model.get(pValue);
+            control.visible = true
+
+            console.debug("Remote : " + lServer.name + " selected" );
+
+            conanHelper.serverName = lServer.name;
+            conanHelper.serveUrl = lServer.url;
+
+            stackView.push(packageListView);
+
+            conanHelper.populatePackageFromServer( lServer.name, packageListView.model );
+        }
+    }
+
+
+    StackView {
+        id: stackView
+        initialItem: remoteView
+        anchors.fill: parent
+    }
+
+
     BusyIndicator {
         id: control
+        anchors.centerIn: stackView.parent
 
         contentItem: Item {
             implicitWidth: 64
