@@ -11,6 +11,10 @@ Item {
     property string packageName: ""
     property variant busyIndicator: ({})
 
+    function replaceAllInString(target, search, replacement) {
+        return target.split(search).join(replacement);
+    }
+
     function populateRemotes(pModel)
     {
         console.debug("> Remote Listing : Start")
@@ -116,7 +120,7 @@ Item {
                     pPackageView.listModel.append({
                         compiler: compilerString,
                         outdated: outDated,
-                        build_type: pckInfo[pck].settings.build_type,
+                        build_type: pckInfo[pck].settings.build_type + " " + pckInfo[pck].settings.arch,
                         optionString: JSON.stringify(pckInfo[pck].options)
                     });
 
@@ -134,7 +138,7 @@ Item {
                         settings: settings
                     }
 
-                    var optionString = JSON.stringify(extra.settings) + " " + JSON.stringify(extra.options);
+                    var optionString = JSON.stringify( Object.assign(extra.settings, extra.options) );
 
                     var mapEntry = lCompilerMap[compilerString];
                     if( mapEntry === undefined){
@@ -154,7 +158,11 @@ Item {
                 var lOptionsList = [];
                 pPackageView.model.append({ name: "", outdated: 0, extra: {} });
                 for(var lOptions in lOptionsMap){
-                    pPackageView.model.append({ name: lOptions.substr(5,4), outdated: 0, extra: {} });
+                    var lOptionString = replaceAllInString(lOptions,",","\n")
+                    lOptionString = replaceAllInString(lOptionString,'"',"")
+                    lOptionString = replaceAllInString(lOptionString,':'," = ")
+                    lOptionString = lOptionString.substr(1, lOptionString.length-2)
+                    pPackageView.model.append({ name: lOptionString, outdated: 0, extra: {} });
                     lOptionsList.push( lOptions )
                 }
 
@@ -166,8 +174,8 @@ Item {
                         var lFound = false;
                         for(var lOptIdx in lOptList){
                             var lCmpData = lOptList[lOptIdx]
-                            var lCmpOptionString = JSON.stringify(lCmpData.extra.settings) + " " + JSON.stringify(lCmpData.extra.options);
-
+                            var lCmpOptionString = JSON.stringify(  Object.assign(lCmpData.extra.settings,lCmpData.extra.options) );
+                            console.log(lCmpOptionString)
                             if( lOptionString === lCmpOptionString ){
                                 pPackageView.model.append({ name: "", outdated: (lCmpData.outdated ? 1 : 2), extra: {} })
                                 lFound = true;

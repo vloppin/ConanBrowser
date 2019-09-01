@@ -62,24 +62,58 @@ Page {
         }
 
         Rectangle{
-            color: "black"
-            height: 1
+            anchors.margins: 5
+            border.width: 1
+            border.color: "darkgrey"
+            color: "lightgrey"
+            height: 50
             width: pckInfoPage.width-24
+            Row{
+                anchors.centerIn: parent
+                spacing: 5
+                padding: 5
+                ToolButton{
+                    background: Rectangle{
+                        id: buttonFrame
+                        border.width: 1
+                        border.color: "darkgrey"
+                        color: "lightgrey"
+                    }
+                    hoverEnabled: true
+                    onHoveredChanged: hovered ? buttonFrame.color = "grey" : buttonFrame.color = "lightgrey"
+                    padding: 5
+                    text: "Grid"
+                    height: 40
+                    width: 75
+                    onClicked: {
+                        if( gridPkg.visible ){
+                            gridPkg.visible = false
+                            listPck.visible = true
+                            this.text = "Grid"
+                        }
+                        else
+                        {
+                            listPck.visible = false
+                            gridPkg.visible = true
+                            this.text = "List"
+                        }
+                    }
+                }
+            }
         }
 
         Grid {
             id: gridPkg
             spacing: 2
             columns: 4
-
+            visible: false
 
             Repeater {
                 id: gridRepeater
                 delegate:
                     Rectangle{
-                        implicitWidth: 90
-                        height: 30
-                        width: (name != "" ? caseText.contentWidth + 10 : 30)
+                        height: (name !== "" ? caseText.contentHeight + 10 : 30)
+                        width: (name !== "" ? caseText.contentWidth + 10 : 150)
                         color: (outdated === 0 ? "white" : (outdated === 1 ? "darkyellow" : "darkgreen"))
                         Text{
                             id: caseText
@@ -91,12 +125,6 @@ Page {
                     }
                 model: ListModel {}
             }
-        }
-
-        Rectangle{
-            color: "black"
-            height: 1
-            width: pckInfoPage.width-24
         }
 
         ListView {
@@ -130,7 +158,7 @@ Page {
                             }
                             Text {
                                 text: compiler
-                                width: 500
+                                width: 400
                             }
                             Text {
                                 height: 20
@@ -159,12 +187,5 @@ Page {
             }
             model: ListModel {}
         } // ListView
-
-        Rectangle{
-            color: "black"
-            height: 1
-            width: pckInfoPage.width-24
-        }
-
     } // Column
 }
