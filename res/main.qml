@@ -138,53 +138,9 @@ ApplicationWindow {
             }
         }
     }
-*/
-
-    ConanHelper {
-        id: conanHelper
-    }
-
-    PackageInfo {
-        id: packageInfo
-    }
-
-    PackageListView {
-        id: packageListView
-        onPackageSelected: {
-            var lPkgName = packageListView.model.get(pValue).name;
-            console.debug( "Package : " + lPkgName + " selected" );
-
-            conanHelper.packageName = lPkgName
-
-            stackView.push(packageInfo);
-
-            conanHelper.populatePackageInfo( lPkgName, conanHelper.serveUrl, packageInfo );
-        }
-    }
-
-    RemoteView {
-        id: remoteView
-        onRemoteSelected: {
-            var lServer = remoteView.model.get(pValue);
-            console.debug("Remote : " + lServer.name + " selected" );
-
-            conanHelper.serverName = lServer.name;
-            conanHelper.serveUrl = lServer.url;
-
-            stackView.push(packageListView);
-
-            conanHelper.populatePackageFromServer( lServer.name, packageListView.model );
-        }
-    }
-
-    StackView {
-        id: stackView
-        initialItem: remoteView
-        anchors.fill: parent
-    }
-
     Component.onCompleted:
     {
+        conanHelper.busyIndicator = control
         conanHelper.populateRemotes( remoteView.model )
     }
 

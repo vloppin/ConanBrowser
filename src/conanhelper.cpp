@@ -90,6 +90,14 @@ QByteArray getPackageList(const QString & pServer)
 
 QByteArray getPackageInfo(const QString & pPackageName, const QString & pServer)
 {
+	QStringList args = { "info", pPackageName };
+	if( ! pServer.isEmpty() ) args << QString("-r=%1").arg( pServer );
+
+	return getJsonResult( args );
+}
+
+QByteArray getPackageMatrix(const QString & pPackageName, const QString & pServer)
+{
 	QStringList args = { "search", pPackageName };
 	if( ! pServer.isEmpty() ) args << QString("-r=%1").arg( pServer );
 
@@ -128,4 +136,10 @@ void ConanHelper::getPackageInfo(const QString &pPackageName, const QString &pSe
 {
 	auto * watcher = ::getByteArrayWatcher(this, pCallback);
 	watcher->setFuture(QtConcurrent::run(&::getPackageInfo, pPackageName, pServer));
+}
+
+void ConanHelper::getPackageMatrix(const QString &pPackageName, const QString &pServer, const QJSValue &pCallback)
+{
+	auto * watcher = ::getByteArrayWatcher(this, pCallback);
+	watcher->setFuture(QtConcurrent::run(&::getPackageMatrix, pPackageName, pServer));
 }

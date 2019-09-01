@@ -29,6 +29,7 @@ Item {
                 }
 
                 console.debug("> Remote Listing : Done")
+                busyIndicator.visible = false;
             });
     }
 
@@ -60,21 +61,46 @@ Item {
                 {
                     console.log("> Package Listing : Error")
                 }
+                busyIndicator.visible = false;
             });
 
     }
-    function populatePackageInfo(pPackageName, pServerName, pGrid)
+    function populatePackageInfo(pPackageName, pServerName, pPackageView)
     {
         console.debug("> Package Info " + pPackageName + " on " + pServerName);
+
+        pPackageView.packageName.text = pPackageName
+
+        var fullyFinished = false
 
         binding.getPackageInfo(pPackageName, pServerName,
             function(pPackageInfo){
                 console.debug("> Package Info : parsing")
 
+                var packageInfo = JSON.parse(pPackageInfo);
+                pPackageView.remoteName.text = packageInfo[0].remote.name
+                pPackageView.creationTime.text = packageInfo[0].creation_date
+
+                console.debug("> Package Info : Done")
+
+                if(fullyFinished)
+                {
+                    busyIndicator.visible = false;
+                }
+                else
+                {
+                    fullyFinished = true;
+                }
+            });
+
+        binding.getPackageMatrix(pPackageName, pServerName,
+            function(pPackageMatrix){
+                console.debug("> Package Matrix : parsing")
+
                 var lCompilerMap = {}
                 var lOptionsMap = {}
 
-                var packageInfo = JSON.parse(pPackageInfo);
+                var packageInfo = JSON.parse(pPackageMatrix);
                 var pckInfo = packageInfo.results[0].items[0].packages;
                 for( var pck in pckInfo )
                 {
@@ -119,14 +145,14 @@ Item {
                 }
 
                 var lOptionsList = [];
-                pGrid.model.append({ name: "", outdated: 0, extra: {} });
+                pPackageView.model.append({ name: "", outdated: 0, extra: {} });
                 for(var lOptions in lOptionsMap){
-                    pGrid.model.append({ name: lOptions.substr(5,4), outdated: 0, extra: {} });
+                    pPackageView.model.append({ name: lOptions.substr(5,4), outdated: 0, extra: {} });
                     lOptionsList.push( lOptions )
                 }
 
                 for(var lCompiler in lCompilerMap){
-                    pGrid.model.append({ name: lCompiler, outdated: 0, extra: {} })
+                    pPackageView.model.append({ name: lCompiler, outdated: 0, extra: {} })
 
                     var lOptList = lCompilerMap[lCompiler];
                     for(var lOptionString in lOptionsMap){
@@ -136,20 +162,29 @@ Item {
                             var lCmpOptionString = JSON.stringify(lCmpData.extra.settings) + " " + JSON.stringify(lCmpData.extra.options);
 
                             if( lOptionString === lCmpOptionString ){
-                                pGrid.model.append({ name: "", outdated: (lCmpData.outdated ? 1 : 2), extra: {} })
+                                pPackageView.model.append({ name: "", outdated: (lCmpData.outdated ? 1 : 2), extra: {} })
                                 lFound = true;
 
                             }
                         }
                         if( !lFound ){
-                            pGrid.model.append({ name: "", outdated: 0, extra: {} });
+                            pPackageView.model.append({ name: "", outdated: 0, extra: {} });
                         }
                     }
                 }
 
-                pGrid.grid.columns = lOptionsList.length + 1;
+                pPackageView.grid.columns = lOptionsList.length + 1;
 
-                console.debug("> Package Info : Done");
+                console.debug("> Package Matrix : Done");
+
+                if(fullyFinished)
+                {
+                    busyIndicator.visible = false;
+                }
+                else
+                {
+                    fullyFinished = true;
+                }
             });
     }
 

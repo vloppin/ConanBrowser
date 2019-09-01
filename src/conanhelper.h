@@ -15,6 +15,8 @@ public:
 	Q_INVOKABLE void getPackageList(const QString & pServer, const QJSValue & pCallback);
 
 	Q_INVOKABLE void getPackageInfo(const QString & pPackageName, const QString & pServer, const QJSValue & pCallback);
+
+	Q_INVOKABLE void getPackageMatrix(const QString & pPackageName, const QString & pServer, const QJSValue & pCallback);
 };
 
 #endif // CONANHELPER_H
