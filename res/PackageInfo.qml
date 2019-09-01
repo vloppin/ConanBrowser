@@ -74,13 +74,12 @@ Page {
                 padding: 5
                 ToolButton{
                     background: Rectangle{
-                        id: buttonFrame
                         border.width: 1
                         border.color: "darkgrey"
                         color: "lightgrey"
                     }
                     hoverEnabled: true
-                    onHoveredChanged: hovered ? buttonFrame.color = "grey" : buttonFrame.color = "lightgrey"
+                    onHoveredChanged: hovered ? background.color = "grey" : background.color = "lightgrey"
                     padding: 5
                     text: "Grid"
                     height: 40
