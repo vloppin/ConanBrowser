@@ -22,6 +22,7 @@ Page {
                 border.color: "darkgrey"
                 color: "lightgrey"
             }
+            onHoveredChanged: hovered ? background.color = "grey" : background.color = "lightgrey"
             Text {
                 anchors.fill: parent
                 leftPadding: 20

@@ -23,6 +23,7 @@ Page {
                 border.color: "darkgrey"
                 color: "lightgrey"
             }
+            onHoveredChanged: hovered ? background.color = "grey" : background.color = "lightgrey"
 
             Row {
                 id: row1
