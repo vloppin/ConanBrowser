@@ -113,7 +113,7 @@ Page {
                     Rectangle{
                         height: (name !== "" ? caseText.contentHeight + 10 : 30)
                         width: (name !== "" ? caseText.contentWidth + 10 : 150)
-                        color: (outdated === 0 ? "white" : (outdated === 1 ? "darkyellow" : "darkgreen"))
+                        color: (outdated === 0 ? "white" : (outdated === 1 ? "darkgoldenrod" : "darkgreen"))
                         Text{
                             id: caseText
                             leftPadding: 5
