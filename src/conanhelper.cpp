@@ -55,24 +55,28 @@ QByteArray getRemoteList()
 
 QByteArray getJsonResult(QStringList & pArgs)
 {
-	QString lTmPath = QDir::tempPath();
-	lTmPath += "/conan_package_result.json";
+	static QAtomicInt sRequestId = 0;
+	int lMyRequestId = sRequestId++;
 
-	pArgs << QString("-j=%1").arg(lTmPath);
+	QString lTmpPath = QDir::tempPath();
+	lTmpPath += QString("/conan_package_result%1.json").arg( lMyRequestId );
+
+	pArgs << QString("-j=%1").arg(lTmpPath);
 
 	QProcess lProcess;
 	lProcess.start("conan", pArgs);
 	lProcess.waitForFinished(-1);
 
 	QFile lFile;
-	lFile.setFileName(lTmPath);
+	lFile.setFileName(lTmpPath);
 	lFile.open(QIODevice::ReadOnly);
 	QByteArray lRes = lFile.readAll();
 	lFile.close();
 
-	QFile::remove(lTmPath);
+	QFile::remove(lTmpPath);
 
 	if( lProcess.exitCode() != 0){
+		std::cout << "Command Failed : conan " << pArgs.join(" ").toStdString() << std::endl;
 		QByteArray lConsole = lProcess.readAll();
 		std::cout << lConsole.data() << std::endl;
 	}
