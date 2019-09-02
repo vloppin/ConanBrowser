@@ -73,6 +73,9 @@ Item {
     {
         console.debug("> Package Info " + pPackageName + " on " + pServerName);
 
+        pPackageView.listModel.clear()
+        pPackageView.model.clear()
+
         pPackageView.packageName.text = pPackageName
 
         var fullyFinished = false
