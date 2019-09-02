@@ -113,7 +113,7 @@ Item {
                     var os = pckInfo[pck].settings.os;
                     var compilerVersion = pckInfo[pck].settings["compiler.version"];
                     var compilerString = os + " " + compiler + " " + compilerVersion;
-                    if( compiler === "Visual Studio" ){
+                    if( compiler === "Visual Studio" && pckInfo[pck].settings["compiler.runtime"] !== undefined ){
                         compilerString += " (" + pckInfo[pck].settings["compiler.runtime"].substr(0,2) + ")";
                     }
 
