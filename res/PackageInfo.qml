@@ -8,6 +8,7 @@ Page {
     property variant remoteName: remoteName
     property variant packageName: packageName
     property variant creationTime: creationTime
+    property variant conanHelper: conanHelper
 
     anchors.fill: parent
     id: pckInfoPage
@@ -98,9 +99,27 @@ Page {
                         }
                     }
                 }
+
+                ToolButton{
+                    id: switchRemoteButton
+                    background: Rectangle{
+                        border.width: 1
+                        border.color: "darkgrey"
+                        color: "lightgrey"
+                    }
+                    hoverEnabled: true
+                    onHoveredChanged: hovered ? background.color = "grey" : background.color = "lightgrey"
+                    padding: 5
+                    text: "Switch To " + remoteName.text
+                    height: 40
+                    width: 75
+
+                    onClicked: {
+                        conanHelper.populatePackageInfo( packageName.text, remoteName.text, pckInfoPage );
+                    }
+                }
             }
         }
-
         Grid {
             id: gridPkg
             spacing: 2

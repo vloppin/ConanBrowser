@@ -142,6 +142,8 @@ ApplicationWindow {
     {
         conanHelper.busyIndicator = control
         conanHelper.populateRemotes( remoteView.model )
+
+        packageInfo.conanHelper = conanHelper
     }
 
 }
